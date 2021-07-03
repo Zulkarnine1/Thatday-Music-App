@@ -1,0 +1,103 @@
+.wallet {
+  --bg-color: #CEB2FC;
+  --bg-color-light: #F0E7FF;
+  --text-color-hover: #fff;
+  --box-shadow-color: rgba(206, 178, 252, 0.48);
+}
+
+.card-03072021 {
+  width: 300px;
+  height: 250px;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  transition: all 0.3s ease-out;
+  text-decoration: none!important;
+}
+
+.card-03072021:hover {
+  transform: translateY(-5px) scale(1.005) translateZ(0);
+  box-shadow: 0 24px 36px rgba(0,0,0,0.11),
+    0 24px 46px var(--box-shadow-color);
+}
+
+.card-03072021:hover .overlay-03072021 {
+  transform: scale(6) translateZ(0);
+}
+
+.card-03072021:hover .circle-03072021 {
+  border-color: var(--bg-color-light);
+  background: var(--bg-color);
+}
+
+.card-03072021:hover .circle-03072021:after {
+  background: var(--bg-color-light);
+}
+
+.card-03072021:hover .card-03072021-p {
+  color: black;
+}
+
+.card-03072021:active {
+  transform: scale(1) translateZ(0);
+  box-shadow: 0 15px 24px rgba(0,0,0,0.11),
+    0 15px 24px var(--box-shadow-color);
+}
+
+.card-03072021-p {
+  font-size: 17px;
+  color: #4C5656;
+  margin-top: 30px;
+  z-index: 1000;
+  transition: color 0.3s ease-out;
+}
+
+.circle-03072021 {
+  width: 131px;
+  height: 131px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease-out;
+}
+
+.circle-03072021:after {
+  content: "";
+  width: 118px;
+  height: 118px;
+  display: block;
+  position: absolute;
+  background: var(--bg-color);
+  border-radius: 50%;
+  top: 4%;
+  left: 4%;
+  transition: opacity 0.3s ease-out;
+}
+
+.circle-03072021 svg {
+  z-index: 10000;
+  transform: translateZ(0);
+}
+
+.overlay-03072021 {
+  width: 118px;
+  position: absolute;
+  height: 118px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  top: 31px;
+  left: 92px;
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}
+

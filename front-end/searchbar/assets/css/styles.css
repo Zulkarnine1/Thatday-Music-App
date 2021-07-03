@@ -1,0 +1,56 @@
+.rest-con {
+  display: inline-block;
+}
+
+.search-bar {
+  width: 326px;
+}
+
+.search-div {
+  margin: 15px;
+  padding: 10px;
+  background-color: #252525;
+}
+
+.date-div-form {
+  border: 2px solid white;
+  vertical-align: baseline;
+  border-radius: 5px;
+  padding: 2px;
+  margin-left: 20px!important;
+  padding: 1px 5px;
+}
+
+#birthday {
+  background-color: #252525;
+  color: white;
+  border-radius: 5px;
+  padding: 2px;
+  border: 0px!important;
+  width: 152px;
+  outline: none!important;
+}
+
+#birthday::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+#birthday:focus-visible {
+  background-color: #252525;
+  color: white;
+  border-radius: 5px;
+  padding: 2px;
+  border: 0px!important;
+  margin-left: 10px;
+  outline: none!important;
+}
+
+.div-btn {
+  margin-left: 5px;
+}
+
+.srch-btn {
+  background-color: #80FFDB;
+  color: black;
+}
+

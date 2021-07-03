@@ -1,0 +1,8 @@
+.font1{
+font-family: 'Courgette', cursive!important;
+}
+
+h1,h2,h3,h4,h5,h6,label,a,p {
+font-family: 'Courgette', cursive;
+font-family: 'Roboto', sans-serif;
+}
