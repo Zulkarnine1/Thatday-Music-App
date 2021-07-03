@@ -24,7 +24,7 @@
 @media (min-width: 600px) {
   .playlist-card {
     display: block;
-    height: 310px;
+    height: 335px;
     width: 100%;
     background-color: #17141d;
     border-radius: 10px;
@@ -39,7 +39,7 @@
 @media (min-width: 200px) and (max-width: 599px) {
   .playlist-card {
     display: block;
-    height: 450px;
+    height: 520px;
     width: 100%;
     background-color: #17141d;
     border-radius: 10px;
@@ -204,7 +204,6 @@ body {
 }
 
 .playlist-card:hover .playlist-btn {
-  width: 100%;
   transition: 0.4s ease-out;
   color: #80FFDB;
   border-color: #6930C3;
@@ -221,11 +220,27 @@ body {
   left: calc(50% - 60px);
 }
 
-@media (min-width: 300px) {
+@media (min-width: 600px) {
   .playlist-btn-con {
     position: absolute;
-    bottom: 15px;
-    left: 33%;
+    bottom: 12px;
+    left: 34%;
+  }
+}
+
+@media (min-width: 300px) {
+  .playlist-btn-con1 {
+    position: absolute;
+    bottom: 12px;
+    left: 3%;
+  }
+}
+
+@media (min-width: 300px) {
+  .playlist-btn-con2 {
+    position: absolute;
+    bottom: 12px;
+    left: 65%;
   }
 }
 
@@ -237,6 +252,25 @@ body {
   }
 }
 
+@media (min-width: 280px) and (max-width:599px) {
+  .playlist-btn-con1 {
+    position: absolute;
+    bottom: 175px;
+    left: 12%;
+    bottom: 220px!important;
+  }
+}
+
+@media (min-width: 280px) and (max-width:599px) {
+  .playlist-btn-con2 {
+    position: absolute;
+    bottom: 175px;
+    left: 5%;
+    left: 55%;
+    bottom: 220px!important;
+  }
+}
+
 .playlist-btn {
   background-color: transparent;
   padding: 6px 10px;
@@ -244,5 +278,6 @@ body {
   color: rgba(255,255,255,0.29);
   font-size: 12px;
   transition: 0.4s ease-out;
+  width: 110px;
 }
 
