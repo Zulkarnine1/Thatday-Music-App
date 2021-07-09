@@ -20,12 +20,10 @@
     <link rel="stylesheet" href="static/footer/assets/css/styles.css">
     <link rel="stylesheet" href="static/playlistcard/assets/css/card.css">
     <link rel="stylesheet" href="static/playlistcard/assets/css/styles.css">
-    {% if(loggedin): %}
-    <link rel="stylesheet" href="static/navbar/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/navbar/assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="static/navbar/assets/css/gradient-navbar.css">
-    <link rel="stylesheet" href="static/navbar/assets/css/styles.css">
-    {% endif %}
+    <link rel="stylesheet" href="static/login/assets/css/styles.css">
+    <link rel="stylesheet" href="static/login/assets/css/OcOrato---Login-form-1.css">
+    <link rel="stylesheet" href="static/login/assets/css/OcOrato---Login-form.css">
+
     {% if(not loggedin): %}
     <link rel="stylesheet" href="static/navbar1/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/navbar1/assets/fonts/font-awesome.min.css">
@@ -34,38 +32,28 @@
     {% endif %}
 </head>
 
-{% if(not loggedin): %}
-{% include "notloggedheader.html" %}
-{% endif %}
-{% if(loggedin): %}
-{% include "loggedheader.html" %}
-{% endif %}
-
-
-<body>
-
-{% include "searchbar.html" %}
-{% include "createcard-card.html" %}
-
-
-<div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="font1">Music Cards</h1>
 
 
 
-                </div>
-
-            </div></div>
 
 
+<body style="background-image: url(&quot;/static/login/assets/img/marco-perretta-akNEjp2Fcjg-unsplash.jpg&quot;);background-position: center;background-size: cover;background-repeat: no-repeat;">
 
-{% include "playlist-card.html" %}
-{% include "footer.html" %}
+<div>
+<form id="form" style="font-family:Quicksand, sans-serif;background-color:rgba(44,40,52,0.73);width:320px;padding:40px;">
+        <h1 id="head" style="color: #01e2d0;" class="font1">Login</h1>
+        <div class="text-center"><a href="/" ><img class="rounded img-fluid" id="image" style="width:auto;height:auto;" src="static/navbar/assets/img/2e2fa83ab05744d18ac07213cf2c05b8.png"></a></div>
+        <div class="form-group"><label>Username</label><input class="form-control" name="username" required type="email" id="formum" placeholder="Username"></div>
+        <div class="form-group"><label>Password</label><input class="form-control" name="password" type="password" required id="formum2" placeholder="Password"></div><button class="btn btn-light" id="butonas" style="width: 100%;height: 100%;margin-bottom: 10px;background-color: #01e2d0;" type="button">Sign in</button><a id="linkas"
+            style="font-size: 12px;margin: auto;margin-left: 0;margin-right: 0;margin-bottom: 0;margin-top: 0;padding-left: 0;padding-right: 0;color: #01e2d0;" href="/register">Register</a></form>
+</div>
+
+
+
 
     <script src="static/navbar/assets/js/jquery.min.js"></script>
     <script src="static/navbar/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/login/assets/js/script.js"></script>
 </body>
 
 </html>

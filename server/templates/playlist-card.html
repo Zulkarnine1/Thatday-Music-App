@@ -1,0 +1,31 @@
+
+
+<div class="container card-container-main" style="max-width: 100%;height:auto;">
+    {% for card in all_cards %}
+    <div class="row justify-content-center" style="width: 100%;margin: 15px 0px;">
+                <div class="col-sm-12 col-md-12 col-lg-10 col-xl-8 offset-sm-0 offset-md-0 offset-lg-2 offset-xl-0 align-self-center"><div><div class="playlist-card mx-auto">
+    <div class="playlist-card-img-con" style="background-image: url('{{card.img}}');" ></div>
+    <div class="playlist-info">
+    <h3 class="title-playlist">{{ card.name }}</h3>
+    <h5 class="title-date">{{ card.date }}</h5>
+    <h6 class="title-writer">By - {{ card.by }}</h6>
+    <div class="bar">
+      <div class="emptybar"></div>
+      <div class="filledbar"></div>
+        </div>
+        <div class="playlist-des">{{ card.quote }}</div>
+        <div class="playlist-btn-con">
+            <a href="{{card.playlist}}"  ><button class="playlist-btn"><i class="fa fa-music" ></i>  Listen</button></a>
+        </div>
+        <div class="playlist-btn-con1">
+            <a href="/like/{{card.id}}" ><button class="playlist-btn"><i class="fa fa-heart" ></i>  Like</button></a>
+        </div>
+        <div class="playlist-btn-con2">
+            <a href="/save/{{card.id}}" ><button class="playlist-btn"><i class="fa fa-save" ></i>  Save</button></a>
+        </div>
+
+    </div></div></div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
