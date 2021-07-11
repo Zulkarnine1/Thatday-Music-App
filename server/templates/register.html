@@ -40,15 +40,32 @@
 <body style="background-image: url(&quot;/static/login/assets/img/marco-perretta-akNEjp2Fcjg-unsplash.jpg&quot;);background-position: center;background-size: cover;background-repeat: no-repeat;">
 
 <div>
-<form id="form" style="font-family:Quicksand, sans-serif;background-color:rgba(44,40,52,0.73);width:320px;padding:40px;">
+<form id="form" method="POST" action="/register" style="font-family:Quicksand, sans-serif;background-color:rgba(44,40,52,0.73);width:320px;padding:40px;" enctype="multipart/form-data">
         <h1 id="head" style="color: #01e2d0;" class="font1">Register</h1>
-        <div class="text-center"><a href="/" ><img class="rounded img-fluid" id="image" style="width:auto;height:auto;" src="static/navbar/assets/img/2e2fa83ab05744d18ac07213cf2c05b8.png"></a></div>
-        <div class="form-group"><label>Name</label><input class="form-control" name="name" required type="text" id="formum" placeholder="Name"></div>
+
+            {% with messages = get_flashed_messages() %}
+  {% if messages %}
+
+    {% for message in messages %}
+    <div class="form-group"><label>{{message}}</label></div>
+    {% endfor %}
+
+  {% endif %}
+
+        {% endwith %}
+
+    <div class="form-group">
+        <div class="text-center d-inline-block mx-auto"
+                        style="width: 300px;">
+                        <div class="d-block"><label style="font-size: 20px;"><strong>Avatar</strong></label><img src="https://res.cloudinary.com/scut-zulk/image/upload/v1625956721/icon_funsfh.png" id="fileImg3" style="width: 100px;height: auto;margin: 10px;display:block;" class="mx-auto"></div><input type="file" id="img3" onchange="readURL2(this);" name="file"  hidden><label for="img3" style="    padding: 10px 30px;
+    border: 1px solid white;" class="text-center selBtn">Select</label></div>
+
+        <label>Name</label><input class="form-control" name="name" required type="text" id="formum" placeholder="Name"></div>
         <div class="form-group"><label>Username</label><input class="form-control" name="username" required type="email" id="formum" placeholder="Username"></div>
         <div class="form-group"><label>Password</label><input class="form-control" name="password" type="password" required id="formum2" placeholder="Password"></div>
-        <div class="form-group"><label>Re-type Password</label><input class="form-control" name="password1" type="password" required id="formum2" placeholder="Re-type Password"></div>
+        <div class="form-group"><label>Re-type Password</label><input class="form-control" name="password1" type="password" required id="formum3" placeholder="Re-type Password"></div>
 
-    <button class="btn btn-light" id="butonas" style="width: 100%;height: 100%;margin-bottom: 10px;background-color: #01e2d0;" type="button">Sign in</button><a id="linkas"
+    <button class="btn btn-light" id="butonas" style="width: 100%;height: 100%;margin-bottom: 10px;background-color: #01e2d0;" type="button">Register</button><a id="linkas"
             style="font-size: 12px;margin: auto;margin-left: 0;margin-right: 0;margin-bottom: 0;margin-top: 0;padding-left: 0;padding-right: 0;color: #01e2d0;" href="/login">Login</a></form>
 </div>
 
