@@ -52,7 +52,7 @@ db.create_all()
 Cards = [
     {
         "id":0,
-        "name":"James Birthday",
+        "title":"James Birthday",
         "date":"14 March 2015",
         "by":"Toby Flenderson",
         "quote":"The Random Quotes API allows you to access an extensive collection of more than 60,000 quotes and display them on your application. API features: The API comes with endpoints for getting random quotes and getting a list of all the available quotes categories.",
@@ -61,7 +61,7 @@ Cards = [
     },
 {
         "id":1,
-        "name":"Alises Wedding",
+        "title":"Alises Wedding",
         "date":"19 October 2015",
         "by":"Alison Brie",
         "quote":"The Random Quotes API allows you to access an extensive collection of more than 60,000 quotes and display them on your application. API features: The API comes with endpoints for getting random quotes and getting a list of all the available quotes categories.",
