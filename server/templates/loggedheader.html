@@ -6,7 +6,9 @@
                     <li class="nav-item text-center" role="presentation"><img class="account-pic2" src="{{user_data.img}}"></li>
                     <li class="nav-item" role="presentation"><a class="nav-link text-center navlink-norm active">Hi {{user_data.name}}</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link text-center navlink-norm" href="#"><i class="fa fa-user"></i>&nbsp;Account Settings</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link text-center navlink-norm" href="#"><i class="fa fa-pencil"></i>&nbsp;Create Card</a></li>
+                    {% if(not hide_create_card_link): %}
+                    <li class="nav-item" role="presentation"><a class="nav-link text-center navlink-norm" href="/createcard"><i class="fa fa-pencil"></i>&nbsp;Create Card</a></li>
+                    {% endif %}
                     <li class="nav-item" role="presentation"><a class="nav-link text-center navlink-norm" href="#"><i class="fa fa-save"></i>&nbsp;Saved Playlists</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link text-center navlink-norm" href="/logout"><i class="fa fa-sign-out"></i>&nbsp;Logout</a></li>
                 </ul>
@@ -14,13 +16,15 @@
                     <li class="nav-item" role="presentation">
                         <div>
                             <div class="nav-item dropdown"><a class="dropdown-toggle active nav-link" data-toggle="dropdown" aria-expanded="false"><img class="account-pic" src="{{user_data.img}}">&nbsp;Hi, {{user_data.name}}</a>
-                                <div class="dropdown-menu account-menu" role="menu" style="margin-top: -3px;"><a class="dropdown-item active" role="presentation" href="#"><i class="fa fa-user"></i>&nbsp; Account Settings</a><a class="dropdown-item active" role="presentation" href="#"><i class="fa fa-save"></i>&nbsp; Saved Cards</a><a class="dropdown-item" role="presentation" href="/logout"><i class="fa fa-sign-out"></i>&nbsp;Logout</a></div>
+                                <div class="dropdown-menu account-menu" role="menu" style="margin-top: -3px;margin-left: -25px;"><a class="dropdown-item active" role="presentation" href="#"><i class="fa fa-user"></i>&nbsp; Account Settings</a><a class="dropdown-item active" role="presentation" href="#"><i class="fa fa-save"></i>&nbsp; Saved Cards</a><a class="dropdown-item" role="presentation" href="/logout"><i class="fa fa-sign-out"></i>&nbsp;Logout</a></div>
                             </div>
                         </div>
                     </li>
+                    {% if(not hide_create_card_link): %}
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link navlink-norm" href="#"><i class="fa fa-pencil"></i>&nbsp;Create Card</a></li>
+                        <a class="nav-link navlink-norm" href="/createcard"><i class="fa fa-pencil"></i>&nbsp;Create Card</a></li>
                     <li class="nav-item" role="presentation"></li>
+                    {% endif %}
                 </ul>
         </div>
         </div>

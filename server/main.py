@@ -71,64 +71,96 @@ Cards = [
 
 ]
 
+"""
+       *************        =========================================================        *************
+                            ====================== Routes Section ===================
+                            =========================================================
+                            
+"""
+
+
+
+
+"""
+                            =========================================================
+                            ==================== General Routes =====================
+                            =========================================================
+"""
+
+
 @app.route("/")
 def home():
-
     return render_template("home.html",loggedin=current_user.is_authenticated, all_cards=Cards, user_data=current_user)
+
+
+"""
+                            =========================================================
+                            =============== Authentication Routes ===================
+                            =========================================================
+"""
 
 
 @app.route("/login", methods=["GET","POST"])
 def login():
-    if not current_user.is_authenticated:
-        if request.method == "GET":
-            return render_template("login.html")
-        elif request.method == "POST":
-            quser = User.query.filter_by(username=request.form.get('username')).first()
-            if quser:
-                if(check_password_hash(quser.password, request.form.get('password'))):
-                    login_user(quser)
-                    del current_user.password
-                    return redirect("/")
+    try:
+        if not current_user.is_authenticated:
+            if request.method == "GET":
+                return render_template("login.html")
+            elif request.method == "POST":
+                quser = User.query.filter_by(username=request.form.get('username')).first()
+                if quser:
+                    if(check_password_hash(quser.password, request.form.get('password'))):
+                        login_user(quser)
+                        del current_user.password
+                        return redirect("/")
 
-                else:
-                    flash("Invalid credentials, please try again.")
-                    return redirect(url_for("login"))
-    else:
-        return redirect("/")
+                    else:
+                        flash("Invalid credentials, please try again.")
+                        return redirect(url_for("login"))
+        else:
+            return redirect("/")
+    except:
+        flash("Something went wrong while logging in, please try again.")
+        return redirect("/login")
 
 
 @app.route("/register", methods=["GET","POST"])
 def register():
-    if not current_user.is_authenticated:
-        if request.method == "GET":
-            return render_template("register.html")
-        if request.method == "POST":
-            if User.query.filter_by(username=request.form.get('username')).first():
-                flash("There is a user already registered with the username, please try again.")
-                return redirect(url_for("register"))
-            else:
-                if request.files['file']:
-                    f = request.files['file']
-                    f.save(f.filename)
-                    link = cloudinary.uploader.upload(f.filename,folder=f"thatday/user")["url"]
-                    os.remove(f.filename)
+    try:
+        if not current_user.is_authenticated:
+            if request.method == "GET":
+                return render_template("register.html")
+            if request.method == "POST":
+                if User.query.filter_by(username=request.form.get('username')).first():
+                    flash("There is a user already registered with the username, please try again.")
+                    return redirect(url_for("register"))
                 else:
-                    link = random.choice(SAMPLE_IMAGES_AVATAR)
-                name = request.form["name"]
-                username = request.form["username"]
-                password = generate_password_hash(request.form["password"],method=HASH_METHOD, salt_length=SALT_ROUNDS)
-                new_user = User(name=name,username=username,password=password,img=link)
-                db.session.add(new_user)
-                db.session.commit()
-                login_user(new_user)
-                del current_user.password
+                    if request.files['file']:
+                        f = request.files['file']
+                        f.save(f.filename)
+                        link = cloudinary.uploader.upload(f.filename,folder=f"thatday/user")["url"]
+                        os.remove(f.filename)
+                    else:
+                        link = random.choice(SAMPLE_IMAGES_AVATAR)
+                    name = request.form["name"]
+                    username = request.form["username"]
+                    password = generate_password_hash(request.form["password"],method=HASH_METHOD, salt_length=SALT_ROUNDS)
+                    new_user = User(name=name,username=username,password=password,img=link)
+                    db.session.add(new_user)
+                    db.session.commit()
+                    login_user(new_user)
+                    del current_user.password
 
-                return redirect("/")
-    else:
-        return redirect("/")
+                    return redirect("/")
+        else:
+            return redirect("/")
+    except:
+        flash("Something went wrong while registering, please try again.")
+        return redirect("/register")
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect("/")
@@ -136,5 +168,32 @@ def logout():
 
 
 
+"""
+                            =========================================================
+                            ================ Playlist Card Routes ===================
+                            =========================================================
+"""
+
+
+@app.route("/createcard", methods=["GET","POST"])
+@login_required
+def createcardroute():
+    if (request.method == "GET"):
+        return render_template("createcard.html", loggedin=current_user.is_authenticated, user_data=current_user,hide_create_card_link=True)
+    elif (request.method=="POST"):
+        date = request.form["date"]
+        title = request.form["title"]
+        if(date and title):
+            # Add code for creating card here
+            return request.form
+
+# Edit Card
+
+
+# Get card
+
+# Delete card
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=4000,debug=True)
+    app.run(host="0.0.0.0", port=4000, debug=True)
