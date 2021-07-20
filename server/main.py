@@ -159,6 +159,8 @@ def register():
         return redirect("/register")
 
 
+
+
 @app.route("/logout")
 @login_required
 def logout():
