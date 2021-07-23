@@ -50,10 +50,23 @@
         <div class="container formcon">
             <div class="row">
                 <div class="col-md-12"><div>
+
+                    <div class="mx-auto loading-div" >
+                        <main style="background: #000000ab;padding: 60px;border-radius: 10px;">
+	<div class="preloader mx-auto">
+		<div class="preloader__square"></div>
+		<div class="preloader__square"></div>
+		<div class="preloader__square"></div>
+		<div class="preloader__square"></div>
+	</div>
+	<div class="status" style="color:white;">Creating playlist, please wait patiently. We will redirect you soon<span class="status__dot">.</span><span class="status__dot">.</span><span class="status__dot">.</span></div>
+</main>
+                    </div>
+
 <div class="login-box mx-auto">
   <h2 class="font1" >Create Music Card</h2>
   <h6>Let your loved one's know <br> what they mean to you..</h6>
-  <form style="text-align:center;" method="POST" action="/createcard">
+  <form style="text-align:center;" method="POST" action="/createcard" enctype="multipart/form-data">
     <div class="user-box">
       <input type="text" maxlength="30" autocomplete="off" name="title" required>
       <label class="custlabel170721">Title*</label>
@@ -76,7 +89,7 @@
     </div>
       <label style="color:white;">Note: If you don't upload any cover image we will use a random one.</label>
 
-    <Button type="Submit" >
+    <Button type="submit"  class="submit-btn-230720212008">
       <span></span>
       <span></span>
       <span></span>
@@ -90,13 +103,23 @@
     </div>
 
 
+<style>
 
+</style>
 
 {% include "footer.html" %}
-
     <script src="static/navbar/assets/js/jquery.min.js"></script>
-    <script src="static/navbar/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="static/createcardpage/assets/js/script.js"></script>
+<script src="static/navbar/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="static/createcardpage/assets/js/script.js"></script>
+<script>
+$(".submit-btn-230720212008").click(()=>{
+    $(".login-box").css("display","none")
+    $(".loading-div").css("display","block")
+    window.scrollTo(0, 0);
+})
+
+$(".loading-div").css("display","none")
+</script>
 </body>
 
 </html>

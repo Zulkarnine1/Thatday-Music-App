@@ -3,7 +3,9 @@ from flask import Flask, render_template, redirect, url_for, flash,request, abor
 from flask_login import LoginManager, UserMixin, login_required, current_user, logout_user, login_user
 from configs.dbconfig import DBConfig
 from env import DB_CONNECTION, SALT_ROUNDS, HASH_METHOD, SECRET_KEY, CLOUDINARY_API_SECRET,CLOUDINARY_API_KEY,CLOUDINARY_CLOUD_NAME
-from models import load_class_User
+from models import load_class_User, load_class_Playlist, load_class_Card
+from utilities.get_quote import get_quote
+from utilities.playlist_utility import PlaylistManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from appconstants import SAMPLE_IMAGES_AVATAR
 import random
@@ -11,6 +13,8 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import os
+from datetime import datetime
+
 
 
 
@@ -39,37 +43,44 @@ cloudinary.config(cloud_name = CLOUDINARY_CLOUD_NAME,api_key = CLOUDINARY_API_KE
                   api_secret = CLOUDINARY_API_SECRET,secure = True)
 
 
+
+
+
+
 # Load models
 
 User = load_class_User(db)
+Playlist = load_class_Playlist(db)
+Card = load_class_Card(db)
 
 db.create_all()
 
+# Playlist manager
 
+playlist_manager = PlaylistManager(Playlist)
 
 # Temp Constants
 
-Cards = [
-    {
-        "id":0,
-        "title":"James Birthday",
-        "date":"14 March 2015",
-        "by":"Toby Flenderson",
-        "quote":"The Random Quotes API allows you to access an extensive collection of more than 60,000 quotes and display them on your application. API features: The API comes with endpoints for getting random quotes and getting a list of all the available quotes categories.",
-        "img":"https://images.unsplash.com/photo-1624081185839-d41129ed7df2?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
-        "playlist":"http://www.google.com"
-    },
-{
-        "id":1,
-        "title":"Alises Wedding",
-        "date":"19 October 2015",
-        "by":"Alison Brie",
-        "quote":"The Random Quotes API allows you to access an extensive collection of more than 60,000 quotes and display them on your application. API features: The API comes with endpoints for getting random quotes and getting a list of all the available quotes categories.",
-        "img":"https://phillipbrande.files.wordpress.com/2013/10/random-pic-14.jpg",
-        "playlist":"http://www.google.com"
-    },
 
-]
+
+
+# Constants
+
+MONTHS = {
+    "01":"January",
+    "02":"February",
+    "03":"March",
+    "04":"April",
+    "05":"May",
+    "06":"June",
+    "07":"July",
+    "08":"August",
+    "09":"September",
+    "10":"October",
+    "11":"November",
+    "12":"December",
+}
+
 
 """
        *************        =========================================================        *************
@@ -90,6 +101,7 @@ Cards = [
 
 @app.route("/")
 def home():
+    Cards = Card.query.all()[::-1]
     return render_template("home.html",loggedin=current_user.is_authenticated, all_cards=Cards, user_data=current_user)
 
 
@@ -183,11 +195,53 @@ def createcardroute():
     if (request.method == "GET"):
         return render_template("createcard.html", loggedin=current_user.is_authenticated, user_data=current_user,hide_create_card_link=True)
     elif (request.method=="POST"):
+        # Validation of inputs
         date = request.form["date"]
         title = request.form["title"]
         if(date and title):
-            # Add code for creating card here
-            return request.form
+            date_format = "%Y-%m-%d"
+            dateinformat = datetime.strptime(date,date_format)
+            now = datetime.now()
+            if(dateinformat<=now and len(title)<31):
+                # Create playlist
+                # Playlist
+                no_error, link1 = playlist_manager.get_playlist(date,db)
+                if(no_error):
+                    try:
+                        # Get random image and quote if doesnt exist
+                        if request.files['file']:
+                            f = request.files['file']
+                            f.save(f.filename)
+                            link = cloudinary.uploader.upload(f.filename,folder=f"thatday/card")["url"]
+                            os.remove(f.filename)
+                        else:
+                            link = cloudinary.uploader.upload("https://source.unsplash.com/random",folder=f"thatday/card")["url"]
+
+                        if(not request.form["quote"]):
+                            quote = get_quote()
+                        else:
+                            quote = request.form["quote"]
+
+
+                        year,m,d = tuple(date.split("-"))
+                        if (d[0]=="0"):
+                            d = d[1]
+                        newCard = Card(creator=current_user.id,img=link,title=title,dateformatted=f"{d} {MONTHS[m]} {year}",date=date,by=current_user.name,playlist=link1,quote=quote,likes=0)
+                        db.session.add(newCard)
+                        db.session.commit()
+                        return redirect("/")
+                    except Exception as e:
+                        print(e)
+                        return redirect(
+                            url_for("errorFunc", error="500:Internal server error, please try again later."))
+                else:
+                    return redirect(
+                        url_for("errorFunc", error="500:Internal server error, please try again later."))
+            else:
+                return redirect(url_for("errorFunc",error="422:Invalid input,date should be in present or past . "))
+
+        else:
+            return redirect(url_for("errorFunc", error="422:Invalid input,missing date or title. "))
 
 # Edit Card
 
@@ -196,6 +250,14 @@ def createcardroute():
 
 # Delete card
 
+
+# Error Handling
+
+@app.route("/error/<error>")
+def errorFunc(error):
+    e_code = error.split(":")[0]
+    e_msg = error.split(":")[1]
+    return render_template('error.html',ecode=e_code,msg=e_msg), e_code
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=4000, debug=True)
