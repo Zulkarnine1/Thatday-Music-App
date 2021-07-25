@@ -1,6 +1,15 @@
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
+LIKES = None
+
+def get_LIKES_table(db):
+    global LIKES
+    LIKES = db.Table("likes",
+                     db.Column("uid",db.Integer, db.ForeignKey("user.id")),
+                     db.Column("card_id",db.Integer, db.ForeignKey("card.id")))
+    return LIKES
+
 
 def load_class_User(db):
 
@@ -11,6 +20,8 @@ def load_class_User(db):
         username = db.Column(db.String(250), nullable=False, unique=True)
         password = db.Column(db.String(1000), nullable=False)
         img = db.Column(db.String(1000), nullable=False)
+        liked_cards = db.relationship("Card", secondary=LIKES, backref=db.backref("users_liked",lazy="dynamic"))
+
 
     return User
 
@@ -41,5 +52,8 @@ def load_class_Card(db):
         likes = db.Column(db.Integer, nullable=False)
         children = relationship("User")
         creator = db.Column(db.Integer,  ForeignKey("user.id"),nullable=False)
+
+
+
 
     return Card

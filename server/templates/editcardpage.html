@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Thatday</title>
+    <link rel="stylesheet" href="../static/createcard-card/assets/css/styles.css">
+    <link rel="stylesheet" href="../static/searchbar/assets/css/styles.css">
+    <link rel="stylesheet" href="../static/common/assets/css/styles.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/navbar/assets/img/2e2fa83ab05744d18ac07213cf2c05b8.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../static/navbar/assets/img/2e2fa83ab05744d18ac07213cf2c05b8.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.g../static.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/footer/assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="../static/footer/assets/css/Bold-BS4-Footer-Simple.css">
+    <link rel="stylesheet" href="../static/footer/assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="../static/footer/assets/css/styles.css">
+    <link rel="stylesheet" href="../static/playlistcard/assets/css/card.css">
+    <link rel="stylesheet" href="../static/playlistcard/assets/css/styles.css">
+    <link rel="stylesheet" href="../static/createcardpage/assets/css/styles.css">
+    {% if(loggedin): %}
+    <link rel="stylesheet" href="../static/navbar/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/navbar/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/navbar/assets/css/gradient-navbar.css">
+    <link rel="stylesheet" href="../static/navbar/assets/css/styles.css">
+    {% endif %}
+    {% if(not loggedin): %}
+    <link rel="stylesheet" href="../static/navbar1/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/navbar1/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/navbar1/assets/css/gradient-navbar.css">
+    <link rel="stylesheet" href="../static/navbar1/assets/css/styles.css">
+    {% endif %}
+</head>
+
+
+
+
+
+{% if(not loggedin): %}
+{% include "notloggedheader.html" %}
+{% endif %}
+{% if(loggedin): %}
+{% include "loggedheader.html" %}
+{% endif %}
+<body style="background-image: url(&quot;../static/createcardpage/assets/img/back.jpg&quot;);background-size: cover;background-repeat: no-repeat;background-position: center;">
+<div>
+        <div class="container formcon">
+            <div class="row">
+                <div class="col-md-12"><div>
+
+                    <div class="mx-auto loading-div" >
+                        <main style="background: #000000ab;padding: 60px;border-radius: 10px;">
+	<div class="preloader mx-auto">
+		<div class="preloader__square"></div>
+		<div class="preloader__square"></div>
+		<div class="preloader__square"></div>
+		<div class="preloader__square"></div>
+	</div>
+	<div class="status" style="color:white;">Creating playlist, please wait patiently. We will redirect you soon<span class="status__dot">.</span><span class="status__dot">.</span><span class="status__dot">.</span></div>
+</main>
+                    </div>
+
+<div class="login-box mx-auto">
+  <h2 class="font1" >Edit Music Card</h2>
+  <form style="text-align:center;" method="POST" action="/editcard/{{card.id}}" enctype="multipart/form-data">
+    <div class="user-box">
+      <input type="text" maxlength="30" value="{{card.title}}" autocomplete="off" name="title" required>
+      <label class="custlabel170721">Title*</label>
+    </div>
+      <div class="user-box">
+  <input type="date" id="birthday" name="date" value="{{card.date}}" required>
+      <label class="custlabel170721">Date*</label>
+    </div>
+      <label style="color:white;">Note: We will make a playlist of the top songs of the selected date.</label>
+    <div class="user-box">
+        <textarea maxlength="260" name="quote" placeholder="Add a quote that relates to them.. If you keep it empty we will add a random quote ;)">{{card.quote}}</textarea>
+      <label class="custlabel170721">Quote</label>
+    </div>
+      <div class="user-box">
+        <div class="text-center d-inline-block mx-auto"
+                        style="width: 300px;">
+                        <div class="d-block"><img src="{{card.img}}" id="fileImg3" style="width: 130px;height: auto;margin: 10px;display:block;margin-top: 40px;" class="mx-auto"></div><input type="file" id="img3" onchange="readURL2(this);" name="file"  hidden><label for="img3" style="top:95%;left:115px;padding: 5px 20px;color:white;
+    border: 1px solid white;" class="text-center selBtn">Select</label></div>
+      <label class="custlabel170721">Card Cover</label>
+    </div>
+      <label style="color:white;">Note: If you don't upload any cover image we will use the existing one.</label>
+
+    <Button type="submit"  class="submit-btn-230720212008">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      Submit
+    </Button>
+  </form>
+</div></div></div>
+            </div>
+        </div>
+    </div>
+
+
+<style>
+
+</style>
+
+{% include "footer.html" %}
+    <script src="../static/navbar/assets/js/jquery.min.js"></script>
+<script src="../static/navbar/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="../static/createcardpage/assets/js/script.js"></script>
+<script>
+$(".submit-btn-230720212008").click(()=>{
+    $(".login-box").css("display","none")
+    $(".loading-div").css("display","block")
+    window.scrollTo(0, 0);
+})
+
+$(".loading-div").css("display","none")
+</script>
+</body>
+
+</html>

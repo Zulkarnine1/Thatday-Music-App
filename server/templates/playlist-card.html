@@ -3,6 +3,7 @@
 <div class="container card-container-main" style="max-width: 100%;height:auto;">
     {% for card in all_cards %}
     <div class="row justify-content-center" style="width: 100%;margin: 15px 0px;">
+        <a href="/card/{{card.id}}">
                 <div class="col-sm-12 col-md-12 col-lg-10 col-xl-8 offset-sm-0 offset-md-0 offset-lg-2 offset-xl-0 align-self-center"><div><div class="playlist-card mx-auto">
     <div class="playlist-card-img-con" style="background-image: url('{{card.img}}');" ></div>
     <div class="playlist-info">
@@ -17,8 +18,17 @@
         <div class="playlist-btn-con">
             <a href="{{card.playlist}}"  ><button class="playlist-btn"><i class="fa fa-music" ></i>  Listen</button></a>
         </div>
-        <div class="playlist-btn-con1">
-            <a href="/like/{{card.id}}" ><button class="playlist-btn"><i class="fa fa-heart" ></i>  Like</button></a>
+
+
+
+        <div class="playlist-btn-con1" >
+            {% if(card.liked) %}
+            <button class="playlist-btn likeBtn-{{card.id}}" onclick="unlikeFunc('{{card.id}}')"><i class="fa fa-heart" style='color:red;'  ></i>  {{card.likes}}</button>
+            {% endif %}
+            {% if(not card.liked) %}
+            <button class="playlist-btn likeBtn-{{card.id}}" onclick="likeFunc('{{card.id}}')"><i class="fa fa-heart-o" ></i>  {{card.likes}}</button>
+            {% endif %}
+
         </div>
         <div class="playlist-btn-con2">
             <a href="/save/{{card.id}}" ><button class="playlist-btn"><i class="fa fa-save" ></i>  Save</button></a>
@@ -26,6 +36,78 @@
 
     </div></div></div>
             </div>
+            </a>
         </div>
+
     {% endfor %}
     </div>
+
+<script>
+    {% if(loggedin): %}
+ const USER_AUTHENTICATED = true;
+    {% endif %}
+    {% if(not loggedin): %}
+const USER_AUTHENTICATED = false;
+    {% endif %}
+
+    function likeFunc(id){
+    if(USER_AUTHENTICATED){
+    $.ajax({
+     url : '/like/'+id,
+     method : 'put',
+     data : {
+     },
+        success: (ret) => {
+            if(ret.status){
+                if (ret.likes == 0) {
+                    ret.likes = ""
+                } else if (ret.likes > 999) {
+                    ret.likes = (ret.likes / 1000) + "k"
+                }
+                var element = document.getElementsByClassName("likeBtn-" + id).item(0);
+                console.log(element)
+                element.innerHTML = "<i class='fa fa-heart' style='color:red;' ></i>  " + ret.likes
+                element.onclick = () => { unlikeFunc(id) }
+            }
+            
+        }
+})
+
+}else{
+window.location.href = "/login"
+}
+
+    
+    }
+
+
+    function unlikeFunc(id){
+    if(USER_AUTHENTICATED){
+    $.ajax({
+     url : '/like/'+id,
+     method : 'put',
+     data : {
+     },
+     success: (ret) => {
+         if(ret.status){
+             if(ret.likes==0){
+                 ret.likes = ""
+             }else if(ret.likes>999){
+                 ret.likes = (ret.likes/1000) +"k"
+             }
+             var element = document.getElementsByClassName("likeBtn-" + id).item(0);
+             console.log(element)
+             element.innerHTML = "<i class='fa fa-heart-o' ></i>  " + ret.likes
+             element.onclick = () => { likeFunc(id) }
+         }
+            
+        }
+    })
+
+}else{
+window.location.href = "/login"
+}
+
+    }
+
+</script>
