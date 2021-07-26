@@ -2,7 +2,10 @@ import requests as req
 from bs4 import BeautifulSoup
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from server.env import SPOTIFY_ID,SPOTIFY_SECRET, ROOT_ROUTE
+import os
+SPOTIFY_ID = os.getenv("SPOTIFY_ID")
+SPOTIFY_SECRET = os.getenv("SPOTIFY_SECRET")
+ROOT_ROUTE = os.getenv("ROOT_ROUTE")
 
 
 
