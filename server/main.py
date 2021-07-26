@@ -3,12 +3,12 @@ from flask import Flask, render_template, redirect, url_for, flash,request, abor
 from flask import jsonify
 from flask_login import LoginManager, UserMixin, login_required, current_user, logout_user, login_user
 from configs.dbconfig import DBConfig
-from env import DB_CONNECTION, SALT_ROUNDS, HASH_METHOD, SECRET_KEY, CLOUDINARY_API_SECRET,CLOUDINARY_API_KEY,CLOUDINARY_CLOUD_NAME
+from env import DB_CONNECTION, SALT_ROUNDS, HASH_METHOD, SECRET_KEY, CLOUDINARY_API_SECRET,CLOUDINARY_API_KEY,CLOUDINARY_CLOUD_NAME, IS_PROD
 from models import load_class_User, load_class_Playlist, load_class_Card, get_LIKES_table
 from utilities.get_quote import get_quote
 from utilities.playlist_utility import PlaylistManager
 from werkzeug.security import generate_password_hash, check_password_hash
-from appconstants import SAMPLE_IMAGES_AVATAR
+from appconstants import SAMPLE_IMAGES_AVATAR, MONTHS
 import random
 import cloudinary
 import cloudinary.uploader
@@ -74,27 +74,6 @@ db.create_all()
 
 playlist_manager = PlaylistManager(Playlist)
 
-# Temp Constants
-
-
-
-
-# Constants
-
-MONTHS = {
-    "01":"January",
-    "02":"February",
-    "03":"March",
-    "04":"April",
-    "05":"May",
-    "06":"June",
-    "07":"July",
-    "08":"August",
-    "09":"September",
-    "10":"October",
-    "11":"November",
-    "12":"December",
-}
 
 
 """
@@ -391,4 +370,4 @@ def errorFunc(error):
     return render_template('error.html',ecode=e_code,msg=e_msg), e_code
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=4000, debug=True)
+    app.run(host="0.0.0.0", port=4000, debug=not IS_PROD)
