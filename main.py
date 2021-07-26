@@ -17,6 +17,8 @@ import os
 from datetime import datetime
 from functools import wraps
 from custom_decors.card_processor import card_processor
+import uvicorn
+
 
 
 
@@ -369,5 +371,4 @@ def errorFunc(error):
     e_msg = error.split(":")[1]
     return render_template('error.html',ecode=e_code,msg=e_msg), e_code
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=4000, debug=not IS_PROD)
+
