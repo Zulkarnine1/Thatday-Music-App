@@ -411,31 +411,29 @@ def saved_cards():
 # Get saved cards
 
 @app.route("/search",methods=["POST"])
-@login_required
 def search_cards():
-    # try:
-    if(request.method=="POST"):
-        if(request.form["date"]):
-            term = request.form["query"]
-            if(term):
-                cards = Card.query.filter(Card.__ts_vector__.match(term) | Card.date.like(request.form["date"])).all()
+    try:
+        if(request.method=="POST"):
+            if(request.form["date"]):
+                term = request.form["query"]
+                if(term):
+                    cards = Card.query.filter(Card.__ts_vector__.match(term) | Card.date.like(request.form["date"])).all()
+                else:
+                    cards = Card.query.filter(Card.date.like(request.form["date"])).all()
             else:
-                cards = Card.query.filter(Card.date.like(request.form["date"])).all()
-        else:
-            term = request.form["query"]
-            if(term):
-                cards = Card.query.filter(Card.__ts_vector__.match(term)).all()
+                term = request.form["query"]
+                if(term):
+                    cards = Card.query.filter(Card.__ts_vector__.match(term)).all()
+                else:
+                    cards = []
+            if(current_user.is_authenticated):
+                cards = card_processor(cards,current_user.id)
             else:
-                cards = []
-        cards = card_processor(cards,current_user.id)
-        print(request.form)
-        return render_template("searchedcards.html", loggedin=current_user.is_authenticated, all_cards=cards, user_data=current_user,query=term,date=request.form["date"])
-    # except Exception as e:
-    #     print(e)
-    #     return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
-
-
-
+                cards = card_processor(cards,None)
+            return render_template("searchedcards.html", loggedin=current_user.is_authenticated, all_cards=cards, user_data=current_user,query=term,date=request.form["date"])
+    except Exception as e:
+        print(e)
+        return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
 
 
 
