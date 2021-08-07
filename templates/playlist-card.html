@@ -31,7 +31,12 @@
 
         </div>
         <div class="playlist-btn-con2">
-            <a href="/save/{{card.id}}" ><button class="playlist-btn"><i class="fa fa-save" ></i>  Save</button></a>
+            {% if(not card.saved) %}
+            <button class="playlist-btn saveBtn-{{card.id}}" onclick="saveFunc('{{card.id}}')"><i class="fa fa-save"  ></i> Save</button>
+            {% endif %}
+            {% if(card.saved) %}
+            <button class="playlist-btn saveBtn-{{card.id}}" onclick="unSaveFunc('{{card.id}}')"><i class="fa fa-minus-square" ></i>  Unsave</button>
+            {% endif %}
         </div>
 
     </div></div></div>
@@ -99,6 +104,57 @@ window.location.href = "/login"
              console.log(element)
              element.innerHTML = "<i class='fa fa-heart-o' ></i>  " + ret.likes
              element.onclick = () => { likeFunc(id) }
+         }
+            
+        }
+    })
+
+}else{
+window.location.href = "/login"
+}
+
+    }
+
+
+    function saveFunc(id){
+    if(USER_AUTHENTICATED){
+    $.ajax({
+     url : '/save/'+id,
+     method : 'put',
+     data : {
+     },
+        success: (ret) => {
+            if(ret.status){
+                
+                var element = document.getElementsByClassName("saveBtn-" + id).item(0);
+                element.innerHTML = "<i class='fa fa-minus-square' ></i> Unsave" 
+                element.onclick = () => { unSaveFunc(id) }
+            }
+            
+        }
+})
+
+}else{
+window.location.href = "/login"
+}
+
+    
+    }
+
+
+    function unSaveFunc(id){
+    if(USER_AUTHENTICATED){
+    $.ajax({
+     url : '/save/'+id,
+     method : 'put',
+     data : {
+     },
+     success: (ret) => {
+         if(ret.status){
+             
+             var element = document.getElementsByClassName("saveBtn-" + id).item(0);
+             element.innerHTML = "<i class='fa fa-save' ></i> Save" 
+             element.onclick = () => { saveFunc(id) }
          }
             
         }

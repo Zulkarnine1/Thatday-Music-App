@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-DB_CONNECTION = os.getenv("DB_CONNECTION")
+DB_CONNECTION = os.getenv("APP_DB_CONNECTION")
 SALT_ROUNDS = os.getenv("SALT_ROUNDS")
 HASH_METHOD = os.getenv("HASH_METHOD")
 SECRET_KEY = os.getenv("SECRET_KEY")

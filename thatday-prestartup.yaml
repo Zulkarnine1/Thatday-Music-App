@@ -1,0 +1,16 @@
+version: "3"
+services:
+  postgresDB:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=Thatday
+    volumes:
+      - postgres_thatdayDB:/var/lib/postgresql/data
+
+volumes:
+  postgres_thatdayDB:
+    driver: local

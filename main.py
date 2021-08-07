@@ -4,7 +4,7 @@ from flask import jsonify
 from flask_login import LoginManager, UserMixin, login_required, current_user, logout_user, login_user
 from configs.dbconfig import DBConfig
 from env import DB_CONNECTION, SALT_ROUNDS, HASH_METHOD, SECRET_KEY, CLOUDINARY_API_SECRET,CLOUDINARY_API_KEY,CLOUDINARY_CLOUD_NAME, IS_PROD
-from models import load_class_User, load_class_Playlist, load_class_Card, get_LIKES_table
+from models import load_class_User, load_class_Playlist, load_class_Card, get_LIKES_table, get_SAVED_table
 from utilities.get_quote import get_quote
 from utilities.playlist_utility import PlaylistManager
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,7 +17,6 @@ import os
 from datetime import datetime
 from functools import wraps
 from custom_decors.card_processor import card_processor
-import uvicorn
 
 
 
@@ -41,6 +40,10 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect('/login')
 
 def card_creator_only(f):
     @wraps(f)
@@ -66,6 +69,7 @@ cloudinary.config(cloud_name = CLOUDINARY_CLOUD_NAME,api_key = CLOUDINARY_API_KE
 
 # Load models
 get_LIKES_table(db)
+get_SAVED_table(db)
 User = load_class_User(db)
 Playlist = load_class_Playlist(db)
 Card = load_class_Card(db)
@@ -128,6 +132,9 @@ def login():
                     else:
                         flash("Invalid credentials, please try again.")
                         return redirect(url_for("login"))
+                else:
+                    flash("Invalid credentials, please try again.")
+                    return redirect(url_for("login"))
         else:
             return redirect("/")
     except:
@@ -155,8 +162,9 @@ def register():
                         link = random.choice(SAMPLE_IMAGES_AVATAR)
                     name = request.form["name"]
                     username = request.form["username"]
-                    password = generate_password_hash(request.form["password"],method=HASH_METHOD, salt_length=SALT_ROUNDS)
-                    new_user = User(name=name,username=username,password=password,img=link)
+                    moto = request.form["moto"]
+                    password = generate_password_hash(request.form["password"],method=HASH_METHOD, salt_length=int(SALT_ROUNDS))
+                    new_user = User(name=name,username=username,password=password,img=link,moto=moto)
                     db.session.add(new_user)
                     db.session.commit()
                     login_user(new_user)
@@ -165,7 +173,8 @@ def register():
                     return redirect("/")
         else:
             return redirect("/")
-    except:
+    except Exception as e:
+        print(e)
         flash("Something went wrong while registering, please try again.")
         return redirect("/register")
 
@@ -187,6 +196,7 @@ def logout():
                             =========================================================
 """
 
+# Create card
 
 @app.route("/createcard", methods=["GET","POST"])
 @login_required
@@ -240,9 +250,41 @@ def createcardroute():
             return redirect(url_for("errorFunc", error="422:Invalid input,missing date or title. "))
 
 
+# Get card
+@app.route("/card/<id>")
+def get_card(id):
+    try:
+        if(current_user.is_authenticated):
+            card = card_processor([Card.query.get(id)], current_user.id)
+        else:
+            card = card_processor([Card.query.get(id)], None)
+        if(not card):
+            return redirect(url_for("errorFunc",error="404:Couldn't find playlist card for this ID"))
+        else:
+            return render_template("cardpage.html", all_cards=card,loggedin=current_user.is_authenticated, user_data=current_user)
+    except Exception as e:
+        print(e)
+        return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
+
+
+
+
+# Delete card
+@app.route("/deletecard/<id>", methods=["DELETE"])
+@login_required
+@card_creator_only
+def delete_card(id, card):
+    try:
+        db.session.delete(card)
+        db.session.commit()
+        return redirect("/")
+    except Exception as e:
+        return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
+
 
 # Edit Card
 @app.route("/editcard/<id>", methods=["GET","POST"])
+@login_required
 @card_creator_only
 def edit_card(id, card):
     if(request.method=="GET"):
@@ -309,6 +351,7 @@ def edit_card(id, card):
 # Like unlike cards
 
 @app.route("/like/<id>", methods=["PUT"])
+@login_required
 def card_like(id):
     if(request.method=="PUT"):
         try:
@@ -329,38 +372,157 @@ def card_like(id):
             return jsonify({"message":"Couldn't like card. Internal server error.","status":False,"likes":likes}), 500
 
 
+# Save unsave cards
+
+@app.route("/save/<id>", methods=["PUT"])
+@login_required
+def card_save(id):
+    if(request.method=="PUT"):
+        try:
+            card = Card.query.get(id)
+            user = User.query.get(current_user.id)
+            cards_saved = user.saved_cards
+            if(card in cards_saved):
+                user.saved_cards.remove(card)
+            else:
+                user.saved_cards.append(card)
+            db.session.commit()
+            return jsonify({"message":"Successfully saved card.","status":True}), 200
+        except Exception as e:
+            return jsonify({"message":"Couldn't like card. Internal server error.","status":False}), 500
 
 
+# Get saved cards
 
-
-
-
-# Get card
-@app.route("/card/<id>")
-def get_card(id):
+@app.route("/saved")
+@login_required
+def saved_cards():
     try:
-        card = card_processor([Card.query.get(id)], current_user.id)
-        if(not card):
-            return redirect(url_for("errorFunc",error="404:Couldn't find playlist card for this ID"))
-        else:
-            return render_template("cardpage.html", all_cards=card,loggedin=current_user.is_authenticated, user_data=current_user)
+        user = User.query.get(current_user.id)
+        cards = user.saved_cards
+        cards = card_processor(cards,current_user.id)
+        
+        return render_template("savedcards.html", loggedin=current_user.is_authenticated, all_cards=cards, user_data=current_user)
     except Exception as e:
         print(e)
         return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
 
 
+# Get saved cards
+
+@app.route("/search",methods=["POST"])
+@login_required
+def search_cards():
+    # try:
+    if(request.method=="POST"):
+        if(request.form["date"]):
+            term = request.form["query"]
+            if(term):
+                cards = Card.query.filter(Card.__ts_vector__.match(term) | Card.date.like(request.form["date"])).all()
+            else:
+                cards = Card.query.filter(Card.date.like(request.form["date"])).all()
+        else:
+            term = request.form["query"]
+            if(term):
+                cards = Card.query.filter(Card.__ts_vector__.match(term)).all()
+            else:
+                cards = []
+        cards = card_processor(cards,current_user.id)
+        print(request.form)
+        return render_template("searchedcards.html", loggedin=current_user.is_authenticated, all_cards=cards, user_data=current_user,query=term,date=request.form["date"])
+    # except Exception as e:
+    #     print(e)
+    #     return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
 
 
-# Delete card
-@app.route("/deletecard/<id>", methods=["DELETE"])
-@card_creator_only
-def delete_card(id, card):
+
+
+
+
+
+"""
+                            =========================================================
+                            =============== Account Routes ===================
+                            =========================================================
+"""
+
+@app.route("/myaccount")
+@login_required
+def myaccount():
     try:
-        db.session.delete(card)
-        db.session.commit()
-        return redirect("/")
+        user = User.query.get(current_user.id)
+        cards = Card.query.filter_by(creator=user.id).all()
+        like_sum = sum([card.likes for card in cards])
+        if (like_sum == 0):
+            like_sum = "-"
+        elif (like_sum > 999):
+            like_sum = str(like_sum / 1000) + "k"
+        cards = card_processor(cards,current_user.id)
+
+        return render_template("accountpage.html", loggedin=current_user.is_authenticated, all_cards=cards, user_data=current_user, like_sum=like_sum)
     except Exception as e:
         return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
+
+
+@app.route("/editaccount",methods=["GET","POST"])
+@login_required
+def editaccount():
+    try:
+        user = User.query.get(current_user.id)
+        if (request.method == "GET"):
+            return render_template("editaccountpage.html", user_data=current_user)
+        elif(request.method == "POST"):
+            if request.files['file']:
+                f = request.files['file']
+                f.save(f.filename)
+                link = cloudinary.uploader.upload(f.filename,folder=f"thatday/user")["url"]
+                os.remove(f.filename)
+                user.img = link
+            user.name = request.form["name"]
+            user.moto = request.form["moto"]
+            db.session.commit()
+            login_user(user)
+            del current_user.password
+            return redirect("/myaccount")
+            
+
+    except Exception as e:
+        print(e)
+        return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
+
+
+@app.route("/changepassword",methods=["GET","POST"])
+@login_required
+def change_password_page():
+    try:
+        user = User.query.get(current_user.id)
+        if (request.method == "GET"):
+            return render_template("changepassword.html", user_data=current_user)
+        elif(request.method == "POST"):
+            if user:
+                if(check_password_hash(user.password, request.form.get('oldpassword'))):
+                    user.password = generate_password_hash(request.form["password"],method=HASH_METHOD, salt_length=int(SALT_ROUNDS))
+                    db.session.commit()
+                    login_user(user)
+                    del current_user.password
+                    return redirect("/myaccount")
+                else:
+                    flash("Invalid credentials, please try again.")
+                    return redirect(url_for("login"))
+            else:
+                flash("Something went wrong, user couldn't be found, please try again.")
+                return redirect(url_for("change_password_page"))
+            
+    except Exception as e:
+        print(e)
+        return redirect(url_for("errorFunc", error="500:Internal server error please try again later."))
+
+
+"""
+                            =========================================================
+                            =============== Miscellaneous Routes ===================
+                            =========================================================
+"""
 
 
 # Error Handling

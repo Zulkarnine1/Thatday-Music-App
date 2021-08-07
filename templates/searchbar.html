@@ -1,16 +1,43 @@
+
+{% if(date or query): %}
+<div>
+    <div class="container">
+        <form method="POST" action="/search" > 
+        <div class="row">
+            <div class="col-md-12"><div class="search-div "  style="text-align: center;"><input class="form-control search-bar d-inline-block" id="myInput" type="text" name="query" value="{{query}}" placeholder="Search..">
+<div class="rest-con">
+<div class="d-inline-block date-div-form"><label for="birthday" style="color:white">Date:</label>
+<input type="date" id="birthday" value="{{date}}" name="date"></div>
+
+<div class=" div-btn "><button class="btn srch-btn " type="submit" ><i class="fa fa-music" ></i> Search</button></div>
+</div>
+
+
+</div></div>
+        </div>
+    </form>
+    </div>
+</div>
+{% endif %}
+{% if(not date and not query): %}
+
+
 <div>
         <div class="container">
+            <form method="POST" action="/search" > 
             <div class="row">
-                <div class="col-md-12"><div class="search-div "  style="text-align: center;"><input class="form-control search-bar d-inline-block" id="myInput" type="text" placeholder="Search..">
+                <div class="col-md-12"><div class="search-div "  style="text-align: center;"><input class="form-control search-bar d-inline-block" id="myInput" type="text" name="query" placeholder="Search..">
     <div class="rest-con">
     <div class="d-inline-block date-div-form"><label for="birthday" style="color:white">Date:</label>
-  <input type="date" id="birthday" name="birthday"></div>
+  <input type="date" id="birthday" name="date"></div>
 
-    <div class=" div-btn "><button class="btn srch-btn " ><i class="fa fa-music" ></i> Search</button></div>
+    <div class=" div-btn "><button class="btn srch-btn " type="submit" ><i class="fa fa-music" ></i> Search</button></div>
     </div>
 
 
 </div></div>
             </div>
+        </form>
         </div>
     </div>
+    {% endif %}

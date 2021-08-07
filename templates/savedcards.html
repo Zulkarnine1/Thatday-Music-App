@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Thatday | Saved Cards</title>
+    <link rel="stylesheet" href="static/createcard-card/assets/css/styles.css">
+    <link rel="stylesheet" href="static/searchbar/assets/css/styles.css">
+    <link rel="stylesheet" href="static/common/assets/css/styles.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="static/navbar/assets/img/2e2fa83ab05744d18ac07213cf2c05b8.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="static/navbar/assets/img/2e2fa83ab05744d18ac07213cf2c05b8.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/footer/assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="static/footer/assets/css/Bold-BS4-Footer-Simple.css">
+    <link rel="stylesheet" href="static/footer/assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="static/footer/assets/css/styles.css">
+    <link rel="stylesheet" href="static/playlistcard/assets/css/card.css">
+    <link rel="stylesheet" href="static/playlistcard/assets/css/styles.css">
+    
+    {% if(loggedin): %}
+    <link rel="stylesheet" href="static/navbar/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/navbar/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="static/navbar/assets/css/gradient-navbar.css">
+    <link rel="stylesheet" href="static/navbar/assets/css/styles.css">
+    {% endif %}
+    {% if(not loggedin): %}
+    <link rel="stylesheet" href="static/navbar1/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/navbar1/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="static/navbar1/assets/css/gradient-navbar.css">
+    <link rel="stylesheet" href="static/navbar1/assets/css/styles.css">
+    {% endif %}
+</head>
+
+{% if(not loggedin): %}
+{% include "notloggedheader.html" %}
+{% endif %}
+{% if(loggedin): %}
+{% include "loggedheader.html" %}
+{% endif %}
+
+
+<body style="background-color: white!important;">
+
+
+
+
+
+<div class="container" style="margin-top: 100px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="font1">Saved Cards</h1>
+
+
+
+                </div>
+
+            </div></div>
+
+
+
+{% include "playlist-card.html" %}
+{% include "footer.html" %}
+
+    <script src="static/navbar/assets/js/jquery.min.js"></script>
+    <script src="static/navbar/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
